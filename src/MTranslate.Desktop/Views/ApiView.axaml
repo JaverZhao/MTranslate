@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.ApiView" x:DataType="vm:ApiViewModel">
+  <StackPanel Margin="38,32" Spacing="22">
+    <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
+    <Border Classes="card" Padding="24">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="8"><TextBlock Text="服务状态" Classes="eyebrow" /><TextBlock Text="{Binding Status}" FontSize="22" FontWeight="SemiBold" /><TextBlock Text="{Binding Availability}" Classes="secondary" /></StackPanel>
+        <Border Grid.Column="1" Background="#FDEBEC" CornerRadius="12" Padding="11,6" VerticalAlignment="Top"><TextBlock Text="OFFLINE" Foreground="#9F2F2D" FontSize="10" FontWeight="Bold" LetterSpacing="1" /></Border>
+      </Grid>
+    </Border>
+    <Grid ColumnDefinitions="*,16,*">
+      <Border Classes="card" Padding="22"><StackPanel Spacing="8"><TextBlock Text="监听地址" Classes="eyebrow" /><TextBlock Text="{Binding Endpoint}" FontFamily="Cascadia Mono, SF Mono" FontSize="17" /><TextBlock Text="默认仅允许本机访问" Classes="secondary" /></StackPanel></Border>
+      <Border Grid.Column="2" Classes="card" Padding="22"><StackPanel Spacing="8"><TextBlock Text="已配对客户端" Classes="eyebrow" /><TextBlock Text="0" FontSize="25" FontWeight="SemiBold" /><TextBlock Text="Token 不会以明文写入数据库" Classes="secondary" /></StackPanel></Border>
+    </Grid>
+  </StackPanel>
+</UserControl>

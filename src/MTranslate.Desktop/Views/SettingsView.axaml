@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.SettingsView" x:DataType="vm:SettingsViewModel">
+  <ScrollViewer>
+    <StackPanel Margin="38,32,38,44" Spacing="22" MaxWidth="820" HorizontalAlignment="Left">
+      <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
+
+      <StackPanel Spacing="10">
+        <TextBlock Text="常规" Classes="eyebrow" />
+        <Border Classes="card">
+          <StackPanel>
+            <Grid ColumnDefinitions="*,230" Margin="22,18"><StackPanel><TextBlock Text="界面语言" FontWeight="SemiBold" /><TextBlock Text="重新启动后完整应用语言设置" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel><ComboBox Grid.Column="1" ItemsSource="{Binding InterfaceLanguages}" SelectedItem="{Binding InterfaceLanguage}" /></Grid>
+            <Border Height="1" Background="#EAE9E5" Margin="22,0" />
+            <Grid ColumnDefinitions="*,230" Margin="22,18"><StackPanel><TextBlock Text="推理加速" FontWeight="SemiBold" /><TextBlock Text="自动模式会根据平台选择安全后端" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel><ComboBox Grid.Column="1" ItemsSource="{Binding AccelerationOptions}" SelectedItem="{Binding Acceleration}" /></Grid>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+
+      <StackPanel Spacing="10">
+        <TextBlock Text="隐私与存储" Classes="eyebrow" />
+        <Border Classes="card">
+          <StackPanel>
+            <Grid ColumnDefinitions="*,Auto" Margin="22,18"><StackPanel><TextBlock Text="翻译缓存" FontWeight="SemiBold" /><TextBlock Text="使用本机 SQLite 缓存重复分段，默认上限 500 MB" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding CacheEnabled}" OnContent="开" OffContent="关" /></Grid>
+            <Border Height="1" Background="#EAE9E5" Margin="22,0" />
+            <Grid ColumnDefinitions="*,Auto" Margin="22,18"><StackPanel><TextBlock Text="保存翻译历史" FontWeight="SemiBold" /><TextBlock Text="关闭后，新翻译不会写入历史记录" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel><ToggleSwitch Grid.Column="1" IsChecked="{Binding HistoryEnabled}" OnContent="开" OffContent="关" /></Grid>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+
+      <Border Background="#E1F3FE" CornerRadius="8" Padding="16">
+        <StackPanel><TextBlock Text="数据位置" Foreground="#1F6C9F" FontWeight="SemiBold" /><TextBlock Text="模型、数据库、缓存和日志存放在当前用户的 MTranslate 应用数据目录。" Foreground="#416F8A" FontSize="12" Margin="0,4,0,0" /></StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

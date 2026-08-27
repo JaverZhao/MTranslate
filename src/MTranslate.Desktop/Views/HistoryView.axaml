@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.HistoryView" x:DataType="vm:HistoryViewModel">
+  <Grid RowDefinitions="Auto,*" Margin="38,32" RowSpacing="22">
+    <Grid ColumnDefinitions="*,220">
+      <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
+      <TextBox Grid.Column="1" PlaceholderText="搜索历史" VerticalAlignment="Center" IsEnabled="False" />
+    </Grid>
+    <Border Grid.Row="1" Classes="card" Padding="34">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="390" Spacing="10">
+        <TextBlock Text="暂无翻译记录" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center" />
+        <TextBlock Text="完成的单文本翻译会按隐私设置保存在本机数据库中。" Classes="secondary" TextAlignment="Center" TextWrapping="Wrap" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

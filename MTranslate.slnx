@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MTranslate.Core/MTranslate.Core.csproj" />
+    <Project Path="src/MTranslate.Desktop/MTranslate.Desktop.csproj" />
+    <Project Path="src/MTranslate.DocumentFormats/MTranslate.DocumentFormats.csproj" />
+    <Project Path="src/MTranslate.Infrastructure/MTranslate.Infrastructure.csproj" />
+    <Project Path="src/MTranslate.Poc/MTranslate.Poc.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MTranslate.Core.Tests/MTranslate.Core.Tests.csproj" />
+    <Project Path="tests/MTranslate.Desktop.Tests/MTranslate.Desktop.Tests.csproj" />
+    <Project Path="tests/MTranslate.DocumentFormats.Tests/MTranslate.DocumentFormats.Tests.csproj" />
+    <Project Path="tests/MTranslate.Infrastructure.Tests/MTranslate.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>

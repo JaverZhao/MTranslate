@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MTranslate.Desktop.ViewModels"
+             x:Class="MTranslate.Desktop.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+  <UserControl.KeyBindings>
+    <KeyBinding Gesture="Ctrl+Enter" Command="{Binding TranslateCommand}" />
+  </UserControl.KeyBindings>
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="38,32,38,28" RowSpacing="20">
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel>
+        <TextBlock Text="翻译工作台" Classes="pageTitle" />
+        <TextBlock Text="输入文本，所有内容只在本机处理。" Classes="secondary" Margin="0,7,0,0" />
+      </StackPanel>
+      <Border Grid.Column="1" Background="#EDF3EC" CornerRadius="12" Padding="11,6" VerticalAlignment="Top">
+        <TextBlock Text="{Binding StatusMessage}" Foreground="#346538" FontSize="12" FontWeight="SemiBold" MaxWidth="320" TextWrapping="Wrap" />
+      </Border>
+    </Grid>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,20,*,20,180">
+      <StackPanel>
+        <TextBlock Text="源语言" Classes="eyebrow" Margin="0,0,0,7" />
+        <ComboBox ItemsSource="{Binding SourceLanguages}" SelectedItem="{Binding SelectedSourceLanguage}" />
+      </StackPanel>
+      <Button Grid.Column="1" Command="{Binding SwapCommand}" Classes="quiet" Content="⇄" Padding="5"
+              Width="34" Height="34" VerticalAlignment="Bottom" Margin="-7,0" />
+      <StackPanel Grid.Column="2">
+        <TextBlock Text="目标语言" Classes="eyebrow" Margin="0,0,0,7" />
+        <ComboBox ItemsSource="{Binding TargetLanguages}" SelectedItem="{Binding SelectedTargetLanguage}" />
+      </StackPanel>
+      <StackPanel Grid.Column="4">
+        <TextBlock Text="模型" Classes="eyebrow" Margin="0,0,0,7" />
+        <ComboBox ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}" IsEnabled="False" />
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="2" ColumnDefinitions="*,16,*">
+      <Border Classes="card" Padding="20">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="原文" FontWeight="SemiBold" FontSize="15" />
+            <TextBlock Grid.Column="1" Text="{Binding SourceCharacterCount, StringFormat={}{0} 字符}" Classes="secondary" FontSize="11" />
+          </Grid>
+          <TextBox Grid.Row="1" Text="{Binding SourceText}" Classes="editor" Margin="0,18,0,12"
+                   AcceptsReturn="True" TextWrapping="Wrap" PlaceholderText="在这里输入或粘贴需要翻译的文本" />
+          <TextBlock Grid.Row="2" Text="Ctrl + Enter  翻译" Classes="secondary" FontFamily="Cascadia Mono, SF Mono" FontSize="10" />
+        </Grid>
+      </Border>
+      <Border Grid.Column="2" Classes="card" Padding="20" Background="#FDFDFC">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="译文" FontWeight="SemiBold" FontSize="15" />
+            <TextBlock Grid.Column="1" Text="{Binding TranslatedCharacterCount, StringFormat={}{0} 字符}" Classes="secondary" FontSize="11" />
+          </Grid>
+          <TextBox Grid.Row="1" Text="{Binding TranslatedText}" Classes="editor" Margin="0,18,0,12"
+                   AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" PlaceholderText="译文将在这里显示" />
+          <TextBlock Grid.Row="2" Text="{Binding ElapsedText}" Classes="secondary" FontSize="11" />
+        </Grid>
+      </Border>
+    </Grid>
+
+    <Grid Grid.Row="3" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="10">
+      <Button Content="翻译" Command="{Binding TranslateCommand}" Classes="primary" MinWidth="96" IsVisible="{Binding !IsBusy}" />
+      <Button Grid.Column="1" Content="取消" Command="{Binding CancelCommand}" Classes="quiet" MinWidth="80" IsVisible="{Binding IsBusy}" />
+      <Button Grid.Column="3" Content="清空" Command="{Binding ClearCommand}" Classes="quiet" />
+      <Button Grid.Column="4" Content="复制译文" Command="{Binding CopyCommand}" Classes="quiet" />
+    </Grid>
+  </Grid>
+</UserControl>

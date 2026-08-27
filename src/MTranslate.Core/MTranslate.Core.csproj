@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>MTranslate domain contracts and translation prompt construction.</Description>
+  </PropertyGroup>
+</Project>

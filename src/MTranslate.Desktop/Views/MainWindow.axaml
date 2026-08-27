@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MTranslate.Desktop.ViewModels"
+        xmlns:views="using:MTranslate.Desktop.Views"
+        x:Class="MTranslate.Desktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="MTranslate"
+        Width="1180" Height="760"
+        MinWidth="980" MinHeight="640"
+        WindowStartupLocation="CenterScreen">
+  <Window.DataTemplates>
+    <DataTemplate DataType="vm:HomeViewModel"><views:HomeView /></DataTemplate>
+    <DataTemplate DataType="vm:FilesViewModel"><views:FilesView /></DataTemplate>
+    <DataTemplate DataType="vm:HistoryViewModel"><views:HistoryView /></DataTemplate>
+    <DataTemplate DataType="vm:ModelsViewModel"><views:ModelsView /></DataTemplate>
+    <DataTemplate DataType="vm:ApiViewModel"><views:ApiView /></DataTemplate>
+    <DataTemplate DataType="vm:SettingsViewModel"><views:SettingsView /></DataTemplate>
+  </Window.DataTemplates>
+  <Window.Styles>
+    <Style Selector="Button.nav">
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="10,9" />
+      <Setter Property="Margin" Value="0,2" />
+    </Style>
+    <Style Selector="Button.nav:pointerover /template/ ContentPresenter">
+      <Setter Property="Background" Value="#EEEDE9" />
+    </Style>
+    <Style Selector="Button.nav.selected">
+      <Setter Property="Background" Value="#E8E7E2" />
+    </Style>
+  </Window.Styles>
+  <Grid ColumnDefinitions="226,*">
+    <Border Grid.Column="0" Background="#F3F2EF" BorderBrush="#E5E4E0" BorderThickness="0,0,1,0">
+      <Grid RowDefinitions="Auto,*,Auto" Margin="18,22">
+        <StackPanel Orientation="Horizontal" Spacing="11">
+          <Border Width="34" Height="34" CornerRadius="8" Background="#252522">
+            <TextBlock Text="M" Foreground="White" FontSize="17" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="MTranslate" FontSize="15" FontWeight="SemiBold" />
+            <TextBlock Text="LOCAL TRANSLATOR" Classes="eyebrow" FontSize="9" />
+          </StackPanel>
+        </StackPanel>
+
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Navigation}" Margin="0,34,0,0">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:NavigationItemViewModel">
+              <Button Classes="nav" Classes.selected="{Binding IsSelected}" Command="{Binding SelectCommand}">
+                <Grid ColumnDefinitions="30,*">
+                  <Border Width="24" Height="24" CornerRadius="5" Background="#E3E2DD">
+                    <TextBlock Text="{Binding Monogram}" FontFamily="Cascadia Mono, SF Mono" FontSize="9"
+                               FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  </Border>
+                  <TextBlock Grid.Column="1" Text="{Binding Title}" VerticalAlignment="Center" FontWeight="Medium" />
+                </Grid>
+              </Button>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border Grid.Row="2" Background="#EDF3EC" CornerRadius="7" Padding="11,9">
+          <StackPanel>
+            <TextBlock Text="本地模式" Foreground="#346538" FontWeight="SemiBold" FontSize="12" />
+            <TextBlock Text="文本不会离开这台电脑" Foreground="#5E775F" FontSize="11" Margin="0,2,0,0" />
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+    <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" />
+  </Grid>
+</Window>

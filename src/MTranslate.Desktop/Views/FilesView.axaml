@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.FilesView" x:DataType="vm:FilesViewModel">
+  <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="38,32" RowSpacing="16">
+    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+      <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
+      <Button Grid.Column="1" Content="清除已完成" Command="{Binding ClearCompletedCommand}" Classes="quiet" VerticalAlignment="Center" />
+      <Button Grid.Column="2" Content="选择文件" Command="{Binding AddFilesCommand}" Classes="primary" VerticalAlignment="Center" />
+    </Grid>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,14,*,14,*,14,220,Auto" ColumnSpacing="0">
+      <StackPanel><TextBlock Text="源语言" Classes="eyebrow" Margin="0,0,0,6" /><ComboBox ItemsSource="{Binding SourceLanguages}" SelectedItem="{Binding SelectedSourceLanguage}" /></StackPanel>
+      <StackPanel Grid.Column="2"><TextBlock Text="目标语言" Classes="eyebrow" Margin="0,0,0,6" /><ComboBox ItemsSource="{Binding TargetLanguages}" SelectedItem="{Binding SelectedTargetLanguage}" /></StackPanel>
+      <StackPanel Grid.Column="4"><TextBlock Text="字幕输出" Classes="eyebrow" Margin="0,0,0,6" /><ComboBox ItemsSource="{Binding SubtitleModes}" SelectedItem="{Binding SelectedSubtitleMode}" /></StackPanel>
+      <StackPanel Grid.Column="6"><TextBlock Text="输出目录" Classes="eyebrow" Margin="0,0,0,6" /><TextBlock Text="{Binding OutputDirectoryText}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,11,0,0" /></StackPanel>
+      <Button Grid.Column="7" Content="更改" Command="{Binding ChooseOutputDirectoryCommand}" Classes="quiet" VerticalAlignment="Bottom" />
+    </Grid>
+
+    <Border Grid.Row="2" x:Name="DropArea" Classes="card" Background="#F9F9F7" Padding="18" DragDrop.AllowDrop="True">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Border Width="38" Height="38" CornerRadius="7" Background="#FBF3DB"><TextBlock Text="FL" Foreground="#956400" FontFamily="Cascadia Mono, SF Mono" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" /></Border>
+        <StackPanel Grid.Column="1" Margin="13,0" VerticalAlignment="Center"><TextBlock Text="拖放 TXT、SRT、VTT、Markdown 或 ASS" FontWeight="SemiBold" /><TextBlock Text="源文件不会被覆盖，输出保存在相同目录。" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel>
+        <TextBlock Grid.Column="2" Text="{Binding StatusMessage}" Classes="secondary" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="3">
+      <Border Classes="card" IsVisible="{Binding !HasTasks}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="9">
+          <TextBlock Text="尚未添加文件" FontSize="18" FontWeight="SemiBold" />
+          <TextBlock Text="支持多文件排队和中断后继续。" Classes="secondary" />
+        </StackPanel>
+      </Border>
+      <ScrollViewer IsVisible="{Binding HasTasks}">
+        <StackPanel Spacing="10">
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Text="任务" Classes="eyebrow" VerticalAlignment="Center" /><Button Grid.Column="1" Content="全部翻译" Command="{Binding TranslateAllCommand}" Classes="primary" /></Grid>
+          <ItemsControl ItemsSource="{Binding Tasks}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:DocumentTaskViewModel">
+                <Border Classes="card" Padding="17" Margin="0,0,0,8">
+                  <Grid ColumnDefinitions="*,90,150,100,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="14" RowSpacing="9">
+                    <StackPanel><TextBlock Text="{Binding FileName}" FontWeight="SemiBold" /><TextBlock Text="{Binding InputPath}" Classes="secondary" FontSize="10" TextTrimming="CharacterEllipsis" MaxWidth="420" /></StackPanel>
+                    <TextBlock Grid.Column="1" Text="{Binding Format}" Classes="eyebrow" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center"><TextBlock Text="{Binding Status}" FontWeight="SemiBold" /><TextBlock Text="{Binding Elapsed}" Classes="secondary" FontSize="10" TextTrimming="CharacterEllipsis" /></StackPanel>
+                    <ProgressBar Grid.Column="3" Value="{Binding Progress}" Maximum="100" Height="6" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="7">
+                      <Button Content="{Binding ActionLabel}" Command="{Binding StartCommand}" Classes="quiet" />
+                      <Button Content="暂停" Command="{Binding PauseCommand}" Classes="quiet" IsVisible="{Binding IsRunning}" />
+                      <Button Content="打开" Command="{Binding OpenOutputCommand}" Classes="quiet" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" Grid.ColumnSpan="5" Text="{Binding OutputPath, StringFormat=输出：{0}}" Classes="secondary" FontSize="10" TextTrimming="CharacterEllipsis" />
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</UserControl>

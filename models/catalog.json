@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "models": [
+    {
+      "id": "hy-mt2-1.8b-fast",
+      "displayName": "Hy-MT2 1.8B Fast",
+      "quantization": "Q2_0c",
+      "repository": "tencent/Hy-MT2-1.8B-2Bit-GGUF",
+      "producer": "AngelSlim",
+      "fileName": "Hy-MT2-1.8B-2Bit.gguf",
+      "url": "https://huggingface.co/tencent/Hy-MT2-1.8B-2Bit-GGUF/resolve/main/Hy-MT2-1.8B-2Bit.gguf",
+      "sha256": "dcc33bbae9b28d923c8c76a64f6157840841d26f8774f3dfd770d5fabeeb1cd7",
+      "sizeBytes": 600534880,
+      "runtimeCompatibility": "blocked-upstream",
+      "compatibilityNote": "Q2_0c requires llama.cpp PR 19357, which is not merged into the main branch. The published GGUF also has unresolved tensor offset mismatch reports on standard llama.cpp."
+    },
+    {
+      "id": "hy-mt2-1.8b-standard",
+      "displayName": "Hy-MT2 1.8B Standard",
+      "quantization": "Q4_K_M",
+      "repository": "tencent/Hy-MT2-1.8B-GGUF",
+      "fileName": "Hy-MT2-1.8B-Q4_K_M.gguf",
+      "url": "https://huggingface.co/tencent/Hy-MT2-1.8B-GGUF/resolve/main/Hy-MT2-1.8B-Q4_K_M.gguf",
+      "sha256": "dc5f44fcf1fa496ee7ad725982c0c8c553a4de00259b53af84c4b89fb0c06699",
+      "sizeBytes": 1133080448,
+      "runtimeCompatibility": "ready"
+    }
+  ]
+}

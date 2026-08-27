@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+.vs/
+.idea/
+*.user
+*.suo
+TestResults/
+artifacts/
+models/
+!models/
+models/*
+!models/catalog.json
+runtime/*/
+!runtime/README.md
+!runtime/runtime-manifest.json

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Structure-preserving document parsers and translation pipeline.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MTranslate.Core/MTranslate.Core.csproj" />
+  </ItemGroup>
+</Project>

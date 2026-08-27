@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Description>MTranslate Phase 1 inference proof-of-concept command line application.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MTranslate.Core/MTranslate.Core.csproj" />
+    <ProjectReference Include="../MTranslate.DocumentFormats/MTranslate.DocumentFormats.csproj" />
+    <ProjectReference Include="../MTranslate.Infrastructure/MTranslate.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
