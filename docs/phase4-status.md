@@ -25,7 +25,7 @@ Each parser implements parse, structure-preserving write, and post-write validat
 - Resumes a matching job by file SHA256, target language, model profile, and output path.
 - Writes to `output.ext.tmp`, flushes, reparses, validates protected structure, then atomically renames.
 - Supports translation-only, original-then-translation, and translation-then-original subtitle output.
-- Detects source language per document segment when the UI is set to automatic.
+- Detects source language from the complete document when the UI is set to automatic, then reuses it for every structure-preserving segment.
 
 ## Desktop integration
 
@@ -36,15 +36,16 @@ The Files page supports native file selection, Avalonia 12 file drag-and-drop, m
 | Check | Result |
 | --- | --- |
 | Release build | Pass, 0 warnings and 0 errors |
-| Core tests | Pass, 30 of 30 |
+| Core tests | Pass, 61 of 61 |
 | Infrastructure tests | Pass, 11 of 11 |
-| Document format tests | Pass, 18 of 18 |
-| Desktop tests | Pass, 7 of 7 |
+| Document format tests | Pass, 19 of 19 |
+| Desktop tests | Pass, 9 of 9 |
 | Real Q4 SRT translation | Pass, 2 cues in one batch |
 | SRT indexes and timestamps | Pass, unchanged after real translation |
 | TXT line layout regression | Pass, CRLF/LF, blank lines, indentation, trailing whitespace, and final newline preserved |
+| Real Q4 Turkish TXT auto-detection | Pass, detected `tr`, translated 5 segments, and preserved 6 physical lines |
 
-The real-model regression input is `tests/data/documents/phase4-real.srt`; the generated local output is `artifacts/phase4/phase4-real.zh-CN.srt`.
+Real-model regression outputs are stored under `artifacts/phase4/`, including `phase4-real.zh-CN.srt` and `turkish-auto.zh-CN.txt`.
 
 ## Next phase boundary
 

@@ -57,6 +57,17 @@ public sealed class FilesViewModelTests
         }
     }
 
+    [Fact]
+    public void LanguageSelectors_ContainEveryOfficialHyMt2Language()
+    {
+        var viewModel = new FilesViewModel(new FakeCoordinator(), new FakeFilePicker());
+
+        Assert.Equal(39, viewModel.SourceLanguages.Count);
+        Assert.Equal(38, viewModel.TargetLanguages.Count);
+        Assert.Contains(viewModel.SourceLanguages, language => language.Code == "tr" && language.DisplayName == "土耳其语");
+        Assert.Contains(viewModel.TargetLanguages, language => language.Code == "ug");
+    }
+
     private static string CreateDirectory()
     {
         var path = Path.Combine(Path.GetTempPath(), $"mtranslate-files-vm-{Guid.NewGuid():N}");

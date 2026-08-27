@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MTranslate.Core;
 using MTranslate.Desktop.Services;
 using MTranslate.DocumentFormats;
 
@@ -34,8 +35,10 @@ public sealed class FilesViewModel : PageViewModel
     public IRelayCommand ClearCompletedCommand { get; }
     public string StatusMessage { get => statusMessage; private set => SetProperty(ref statusMessage, value); }
     public string OutputDirectoryText => outputDirectory ?? "与源文件相同";
-    public IReadOnlyList<LanguageOption> SourceLanguages { get; } = [new("auto", "自动识别"), new("en", "英语"), new("zh-CN", "简体中文"), new("ja", "日语"), new("ko", "韩语")];
-    public IReadOnlyList<LanguageOption> TargetLanguages { get; } = [new("zh-CN", "简体中文"), new("zh-TW", "繁体中文"), new("en", "英语"), new("ja", "日语")];
+    public IReadOnlyList<LanguageOption> SourceLanguages { get; } =
+        [new("auto", "自动识别"), .. TranslationLanguages.All.Select(ToLanguageOption)];
+    public IReadOnlyList<LanguageOption> TargetLanguages { get; } =
+        TranslationLanguages.All.Select(ToLanguageOption).ToArray();
     public IReadOnlyList<SubtitleModeOption> SubtitleModes { get; } =
     [
         new(SubtitleOutputMode.TranslationOnly, "仅译文"),
@@ -46,6 +49,9 @@ public sealed class FilesViewModel : PageViewModel
     public LanguageOption SelectedTargetLanguage { get; set; } = new("zh-CN", "简体中文");
     public SubtitleModeOption SelectedSubtitleMode { get; set; } = new(SubtitleOutputMode.TranslationOnly, "仅译文");
     public bool HasTasks => Tasks.Count > 0;
+
+    private static LanguageOption ToLanguageOption(TranslationLanguage language) =>
+        new(language.Code, language.ChineseName);
 
     public void AddFiles(IEnumerable<string> paths)
     {

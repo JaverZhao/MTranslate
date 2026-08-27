@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using MTranslate.Core;
 using MTranslate.Desktop.Services;
 
 namespace MTranslate.Desktop.ViewModels;
@@ -22,12 +23,7 @@ public sealed class HomeViewModel : PageViewModel
     {
         this.coordinator = coordinator;
         this.clipboard = clipboard;
-        SourceLanguages =
-        [
-            new("auto", "自动识别"), new("en", "英语"), new("zh-CN", "简体中文"),
-            new("zh-TW", "繁体中文"), new("ja", "日语"), new("ko", "韩语"),
-            new("de", "德语"), new("fr", "法语"), new("es", "西班牙语")
-        ];
+        SourceLanguages = [new("auto", "自动识别"), .. TranslationLanguages.All.Select(ToLanguageOption)];
         TargetLanguages = SourceLanguages.Where(language => language.Code != "auto").ToArray();
         Models = [new("standard", "标准 · Q4")];
         selectedSourceLanguage = SourceLanguages[0];
@@ -40,6 +36,9 @@ public sealed class HomeViewModel : PageViewModel
         ClearCommand = new RelayCommand(Clear, () => !IsBusy && (SourceText.Length > 0 || TranslatedText.Length > 0));
         SwapCommand = new RelayCommand(Swap, () => !IsBusy);
     }
+
+    private static LanguageOption ToLanguageOption(TranslationLanguage language) =>
+        new(language.Code, language.ChineseName);
 
     public IReadOnlyList<LanguageOption> SourceLanguages { get; }
     public IReadOnlyList<LanguageOption> TargetLanguages { get; }

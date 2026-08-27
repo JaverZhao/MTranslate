@@ -72,6 +72,32 @@ public sealed class DocumentTranslatorTests
         }
     }
 
+    [Fact]
+    public async Task TranslateAsync_AutoDetectsTurkishOnceForAllTxtLines()
+    {
+        var directory = CreateDirectory();
+        try
+        {
+            var input = Path.Combine(directory, "turkish.txt");
+            var output = Path.Combine(directory, "turkish.zh-CN.txt");
+            await File.WriteAllTextAsync(input,
+                "Bugün biraz yorgun musun?\nCatchii'ye gel.\nHadi tanışalım ve biraz sohbet edelim.");
+            var client = new PrefixTranslationClient();
+            await using var queue = new TranslationJobQueue();
+            var translator = CreateTranslator(directory, queue, client);
+
+            await translator.TranslateAsync(new DocumentTranslationRequest(input, output, "zh-CN"));
+
+            Assert.Equal(3, client.Requests.Count);
+            Assert.All(client.Requests, request => Assert.Equal("tr", request.SourceLanguage));
+            Assert.Equal(3, (await File.ReadAllLinesAsync(output)).Length);
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
     private static DocumentTranslator CreateTranslator(string directory, TranslationJobQueue queue, ITranslationClient client)
     {
         var service = new TranslationService(client, new ChunkManager(), new NullTranslationCache(), queue);

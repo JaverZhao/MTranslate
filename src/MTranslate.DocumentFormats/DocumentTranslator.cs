@@ -44,12 +44,18 @@ public sealed class DocumentTranslator(
         var stopwatch = Stopwatch.StartNew();
 
         var pending = segments.Where(segment => !translations.ContainsKey(segment.Id)).ToArray();
+        var sourceLanguage = request.SourceLanguage;
+        if (pending.Length > 0 && sourceLanguage is null)
+        {
+            sourceLanguage = languageDetector.Detect(string.Join('\n', segments.Select(segment => segment.Content)))?.LanguageCode
+                ?? throw new InvalidOperationException("Unable to detect the document source language; select it explicitly.");
+        }
         if (document.Format is DocumentFormat.Srt or DocumentFormat.Vtt)
         {
             foreach (var batch in pending.Chunk(SubtitleBatchSize))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var batchTranslations = await TranslateSubtitleBatchAsync(batch, request, cancellationToken).ConfigureAwait(false);
+                var batchTranslations = await TranslateSubtitleBatchAsync(batch, request, sourceLanguage!, cancellationToken).ConfigureAwait(false);
                 foreach (var item in batchTranslations)
                 {
                     translations[item.Key] = item.Value;
@@ -64,7 +70,7 @@ public sealed class DocumentTranslator(
             foreach (var segment in pending)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                translations[segment.Id] = await TranslateSegmentAsync(segment.Content, request, cancellationToken).ConfigureAwait(false);
+                translations[segment.Id] = await TranslateSegmentAsync(segment.Content, request, sourceLanguage!, cancellationToken).ConfigureAwait(false);
                 completedTokens += tokenCounts[segment.Id];
                 await SaveCheckpointAsync().ConfigureAwait(false);
                 ReportProgress();
@@ -110,13 +116,14 @@ public sealed class DocumentTranslator(
     private async Task<IReadOnlyDictionary<string, string>> TranslateSubtitleBatchAsync(
         IReadOnlyList<DocumentPart> segments,
         DocumentTranslationRequest request,
+        string sourceLanguage,
         CancellationToken cancellationToken)
     {
         if (segments.Count == 1)
         {
             return new Dictionary<string, string>(StringComparer.Ordinal)
             {
-                [segments[0].Id] = await TranslateSegmentAsync(segments[0].Content, request, cancellationToken).ConfigureAwait(false)
+                [segments[0].Id] = await TranslateSegmentAsync(segments[0].Content, request, sourceLanguage, cancellationToken).ConfigureAwait(false)
             };
         }
 
@@ -126,15 +133,12 @@ public sealed class DocumentTranslator(
             batchText.Append("<mtranslate-segment id=\"").Append(segment.Id).Append("\">\n")
                 .Append(segment.Content).Append("\n</mtranslate-segment>\n");
         }
-        var detectedSource = request.SourceLanguage is null
-            ? languageDetector.Detect(string.Join('\n', segments.Select(segment => segment.Content)))?.LanguageCode
-            : request.SourceLanguage;
-        var translatedBatch = await TranslateSegmentAsync(batchText.ToString(), request, cancellationToken, detectedSource).ConfigureAwait(false);
+        var translatedBatch = await TranslateSegmentAsync(batchText.ToString(), request, sourceLanguage, cancellationToken).ConfigureAwait(false);
         var translations = ParseBatch(translatedBatch, segments);
         foreach (var segment in segments)
         {
             if (!translations.ContainsKey(segment.Id))
-                translations[segment.Id] = await TranslateSegmentAsync(segment.Content, request, cancellationToken).ConfigureAwait(false);
+                translations[segment.Id] = await TranslateSegmentAsync(segment.Content, request, sourceLanguage, cancellationToken).ConfigureAwait(false);
         }
         return translations;
     }
@@ -142,13 +146,9 @@ public sealed class DocumentTranslator(
     private async Task<string> TranslateSegmentAsync(
         string text,
         DocumentTranslationRequest request,
-        CancellationToken cancellationToken,
-        string? detectedSourceLanguage = null)
+        string sourceLanguage,
+        CancellationToken cancellationToken)
     {
-        var sourceLanguage = request.SourceLanguage
-            ?? detectedSourceLanguage
-            ?? languageDetector.Detect(text)?.LanguageCode
-            ?? throw new InvalidOperationException("Unable to detect the document source language; select it explicitly.");
         var result = await translationService.TranslateAsync(new TranslationServiceRequest(
             text,
             request.TargetLanguage,

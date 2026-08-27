@@ -47,6 +47,17 @@ public sealed class HomeViewModelTests
         Assert.Equal("en", viewModel.SelectedTargetLanguage.Code);
     }
 
+    [Fact]
+    public void LanguageSelectors_ContainEveryOfficialHyMt2Language()
+    {
+        var viewModel = new HomeViewModel(new FakeCoordinator(), new FakeClipboard());
+
+        Assert.Equal(39, viewModel.SourceLanguages.Count);
+        Assert.Equal(38, viewModel.TargetLanguages.Count);
+        Assert.Contains(viewModel.SourceLanguages, language => language.Code == "tr" && language.DisplayName == "土耳其语");
+        Assert.Contains(viewModel.TargetLanguages, language => language.Code == "yue");
+    }
+
     private sealed class FakeCoordinator : ITranslationCoordinator
     {
         public bool CacheEnabled { get; set; } = true;
