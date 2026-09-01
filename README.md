@@ -4,7 +4,7 @@ MTranslate is a local-first Windows and macOS desktop translator built around Hy
 
 ## Current milestone
 
-Phase 1 inference POC, Phase 2 Core, Phase 3 Avalonia desktop UI, and Phase 4 document translation are complete. The repository now provides:
+Phase 1 inference POC, Phase 2 Core, Phase 3 Avalonia desktop UI, Phase 4 document translation, and Phase 5 Local API are complete. The repository now provides:
 
 - the specification prompt format and configurable inference profile;
 - a llama-server OpenAI-compatible HTTP client;
@@ -26,12 +26,25 @@ Phase 1 inference POC, Phase 2 Core, Phase 3 Avalonia desktop UI, and Phase 4 do
 - an Avalonia 12 MVVM desktop application with Home, Files, History, Models, Local API, and Settings navigation;
 - a functional Home translation workflow connected to model verification, llama-server, the priority queue, chunking, and SQLite cache;
 - local copy, clear, language swap, cancellation, character counts, timing, and `Ctrl+Enter` translation;
-- an explicit unavailable state for the API Gateway until its scheduled implementation phase;
+- an ASP.NET Core loopback API Gateway with health, pairing, info, models, translation, batch, and SSE endpoints;
+- per-client 256-bit bearer tokens stored only as SHA-256 hashes, revocation, extension-only CORS, Host checks, request limits, and rate limits;
 - structure-preserving TXT, SRT, VTT, Markdown, and ASS parsers;
 - byte-order-mark and line-ending round trips, subtitle batch translation, bilingual subtitle modes, token-weighted progress, checkpoints, and atomic output;
 - a functional Files workspace with drag and drop, multi-file queues, language and output selection, pause, resume, retry, and output-folder access.
 
 The repository does not commit model weights or llama.cpp binaries. Supply an explicitly selected and regression-tested llama-server executable and a GGUF model when running the POC or desktop translator. See `docs/phase3-status.md` for the desktop acceptance record.
+
+## Local API
+
+The desktop application starts the Gateway on the first available reserved loopback port: `17891`, `17893`, `17895`, `17897`, or `17899`. Open **本地 API**, generate a six-digit one-time code, then pair a client:
+
+```powershell
+$pair = Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:17891/api/v1/pair" -ContentType "application/json" -Body '{"code":"123456","clientName":"My Tool","clientType":"desktop"}'
+$headers = @{ Authorization = "Bearer $($pair.token)" }
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:17891/api/v1/translate" -Headers $headers -ContentType "application/json" -Body '{"text":"Hello world.","sourceLanguage":"en","targetLanguage":"zh-CN","mode":"standard"}'
+```
+
+Use the actual endpoint shown in the application. The six-digit code is illustrative; tokens are shown only once during pairing. See `docs/phase5-status.md` for the complete endpoint and security acceptance record.
 
 ## Build and test
 
@@ -94,6 +107,12 @@ Run the complete Phase 1 regression suite while managing llama-server automatica
 
 ```powershell
 dotnet run --project src/MTranslate.Poc -- verify --exe "runtime/win-x64/llama-server.exe" --model "models/Hy-MT2-1.8B-Q4_K_M.gguf" --mode "standard-q4-k-m" --report "artifacts/phase1/q4-regression-report.json"
+```
+
+Windows x64 Vulkan GPU verification for the Standard Q4 model:
+
+```powershell
+dotnet run --project src/MTranslate.Poc -- verify --exe "runtime/win-vulkan-x64/llama-server.exe" --model "models/Hy-MT2-1.8B-Q4_K_M.gguf" --mode "standard-q4-k-m-vulkan" --gpu-layers 999 --report "artifacts/phase1/q4-vulkan-regression-report.json"
 ```
 
 ## Compatibility status

@@ -72,13 +72,50 @@ public sealed class ModelManager
         return valid;
     }
 
-    public async Task SwitchAsync(string modelId, CancellationToken cancellationToken = default)
+    public async Task DownloadAsync(
+        string modelId,
+        Uri source,
+        IModelDownloader downloader,
+        IProgress<DownloadProgress>? progress = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(downloader);
+        var model = GetModel(modelId);
+        SetState(model, ModelState.Downloading);
+        try
+        {
+            await downloader.DownloadAsync(
+                source,
+                model.FilePath,
+                model.Sha256,
+                progress,
+                cancellationToken).ConfigureAwait(false);
+            if (!await VerifyInstalledAsync(modelId, cancellationToken).ConfigureAwait(false))
+                throw new InvalidDataException($"Model '{model.DisplayName}' failed checksum verification after download.");
+        }
+        catch (OperationCanceledException)
+        {
+            SetState(model, File.Exists(model.FilePath) ? ModelState.Installed : ModelState.NotInstalled);
+            throw;
+        }
+        catch
+        {
+            SetState(model, ModelState.DownloadFailed);
+            throw;
+        }
+    }
+
+    public async Task SwitchAsync(
+        string modelId,
+        CancellationToken cancellationToken = default,
+        bool forceReload = false)
     {
         var model = GetModel(modelId);
         await switchGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            if (ActiveModelId is not null && ActiveModelId.Equals(modelId, StringComparison.OrdinalIgnoreCase)
+            if (!forceReload && ActiveModelId is not null && ActiveModelId.Equals(modelId, StringComparison.OrdinalIgnoreCase)
                 && runtimeManager.Status == RuntimeStatus.Ready)
                 return;
             if (!await VerifyInstalledAsync(modelId, cancellationToken).ConfigureAwait(false))

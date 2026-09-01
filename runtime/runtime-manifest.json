@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "llamaCpp": {
     "build": "b10516",
     "commit": "b95502ba9aa0eb73a2f4fc8878d7fbe6a847a0b9",
@@ -10,6 +10,12 @@
         "fileName": "llama-b10516-bin-win-cpu-x64.zip",
         "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10516/llama-b10516-bin-win-cpu-x64.zip",
         "sha256": "fbbbc55e0eb2e1b07f9dcb9488616c98ed47d9003b90e15e7c8c7812c4307cd3"
+      },
+      {
+        "rid": "win-x64-vulkan",
+        "fileName": "llama-b10516-bin-win-vulkan-x64.zip",
+        "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10516/llama-b10516-bin-win-vulkan-x64.zip",
+        "sha256": "530f57d2a874ce017827c1e5a926812b9d5de4667248575d1372b1c0acf94d83"
       },
       {
         "rid": "win-arm64",
@@ -29,6 +35,25 @@
         "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10516/llama-b10516-bin-macos-x64.tar.gz",
         "sha256": "b7adecf7bd2cde577ddabee8357a72409165d8104f43b4acee9f1b98cc9c447a"
       }
+    ]
+  },
+  "q2_0cCompatibilityRuntime": {
+    "status": "experimental-ready-win-x64",
+    "sourceRepository": "https://github.com/chaxu01/llama.cpp",
+    "upstreamPullRequest": "https://github.com/ggml-org/llama.cpp/pull/19357",
+    "commit": "2af64dd00a6689a7bfaf69b4768a944d0ec6bade",
+    "validatedAt": "2026-08-31",
+    "validatedRid": "win-x64",
+    "buildScript": "eng/build-q2c-runtime.ps1",
+    "files": [
+      { "name": "ggml-base.dll", "sha256": "63d16e5722e9d37d14494c8fface7c8df15c35282aa650b387e3ff2946732ee8" },
+      { "name": "ggml-cpu.dll", "sha256": "75f1f7d566a34b7598cd270d1dca043814f0fef11ac26c18b8705289f43407d1" },
+      { "name": "ggml.dll", "sha256": "7ffb00231b80855f519a309c251b2a5a7073f2d09327a02b35bd832f12cbaeaf" },
+      { "name": "llama-common.dll", "sha256": "2f49dddfc3d8b01796ed1610e7cf08ecbe48a5baf67ffa13b6da18d74e6ebe23" },
+      { "name": "llama-server-impl.dll", "sha256": "ae70a79c2020ddb48ebe9586f83f1b3c6d41bda4f8510dcf9e95e2b697d61be5" },
+      { "name": "llama-server.exe", "sha256": "32ad1d596250d9f38d754b63896b9c2f8a007dec12d22abd4d5a2064ecb952a6" },
+      { "name": "llama.dll", "sha256": "59b944598d4c70e9fd42a06f32ca8daed12788d898ceede877fb54e107424c5f" },
+      { "name": "mtmd.dll", "sha256": "54bdbe3ba6a4676af616db84a24bf11e708fa9f5d89f5f8929b6e495686daae8" }
     ]
   }
 }

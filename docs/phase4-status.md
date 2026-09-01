@@ -36,10 +36,10 @@ The Files page supports native file selection, Avalonia 12 file drag-and-drop, m
 | Check | Result |
 | --- | --- |
 | Release build | Pass, 0 warnings and 0 errors |
-| Core tests | Pass, 61 of 61 |
+| Core tests | Pass, 62 of 62 |
 | Infrastructure tests | Pass, 11 of 11 |
 | Document format tests | Pass, 19 of 19 |
-| Desktop tests | Pass, 9 of 9 |
+| Desktop tests | Pass, 10 of 10 |
 | Real Q4 SRT translation | Pass, 2 cues in one batch |
 | SRT indexes and timestamps | Pass, unchanged after real translation |
 | TXT line layout regression | Pass, CRLF/LF, blank lines, indentation, trailing whitespace, and final newline preserved |
@@ -49,4 +49,4 @@ Real-model regression outputs are stored under `artifacts/phase4/`, including `p
 
 ## Next phase boundary
 
-Phase 5 will implement the authenticated loopback API Gateway. Document parsers remain independent from both the desktop views and API endpoints so future job endpoints can reuse the same safe pipeline.
+Phase 5 has added the authenticated loopback API Gateway. Document parsers remain independent from both the desktop views and API endpoints so later document-job endpoints can reuse the same safe pipeline.

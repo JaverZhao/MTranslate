@@ -6,6 +6,7 @@ public abstract class PageViewModel(string title, string subtitle) : ObservableO
 {
     public string Title { get; } = title;
     public string Subtitle { get; } = subtitle;
+    public virtual void OnNavigatedTo() { }
 }
 
 public sealed record LanguageOption(string Code, string DisplayName)

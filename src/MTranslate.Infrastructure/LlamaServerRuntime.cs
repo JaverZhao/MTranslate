@@ -13,6 +13,7 @@ public sealed record InferenceRuntimeConfiguration(
     int Port = 17892,
     int ContextSize = 8192,
     int ParallelSlots = 2,
+    int GpuLayers = 0,
     TimeSpan? StartupTimeout = null,
     string? ApiKey = null)
 {
@@ -32,6 +33,8 @@ public sealed record InferenceRuntimeConfiguration(
             throw new ArgumentOutOfRangeException(nameof(ContextSize));
         if (ParallelSlots <= 0)
             throw new ArgumentOutOfRangeException(nameof(ParallelSlots));
+        if (GpuLayers < 0)
+            throw new ArgumentOutOfRangeException(nameof(GpuLayers));
     }
 }
 
@@ -91,6 +94,8 @@ public sealed class LlamaServerRuntime : IInferenceRuntime
         startInfo.ArgumentList.Add(configuration.ContextSize.ToString(System.Globalization.CultureInfo.InvariantCulture));
         startInfo.ArgumentList.Add("-np");
         startInfo.ArgumentList.Add(configuration.ParallelSlots.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        startInfo.ArgumentList.Add("--n-gpu-layers");
+        startInfo.ArgumentList.Add(configuration.GpuLayers.ToString(System.Globalization.CultureInfo.InvariantCulture));
         startInfo.ArgumentList.Add("--api-key");
         startInfo.ArgumentList.Add(ApiKey);
 

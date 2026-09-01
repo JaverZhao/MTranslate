@@ -1,15 +1,48 @@
 <UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.HistoryView" x:DataType="vm:HistoryViewModel">
-  <Grid RowDefinitions="Auto,*" Margin="38,32" RowSpacing="22">
-    <Grid ColumnDefinitions="*,220">
+  <Grid RowDefinitions="Auto,Auto,*" Margin="38,32" RowSpacing="18">
+    <Grid ColumnDefinitions="*,Auto">
       <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
-      <TextBox Grid.Column="1" PlaceholderText="搜索历史" VerticalAlignment="Center" IsEnabled="False" />
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <TextBox Width="220" Text="{Binding SearchText}" PlaceholderText="搜索原文或译文" />
+        <Button Content="搜索" Command="{Binding RefreshCommand}" Classes="quiet" />
+        <Button Content="清空历史" Command="{Binding ClearCommand}" Classes="quiet" />
+      </StackPanel>
     </Grid>
-    <Border Grid.Row="1" Classes="card" Padding="34">
+    <TextBlock Grid.Row="1" Text="{Binding StatusText}" Classes="secondary" />
+    <Border Grid.Row="2" Classes="card" Padding="34" IsVisible="{Binding IsEmpty}">
       <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="390" Spacing="10">
         <TextBlock Text="暂无翻译记录" FontSize="19" FontWeight="SemiBold" HorizontalAlignment="Center" />
         <TextBlock Text="完成的单文本翻译会按隐私设置保存在本机数据库中。" Classes="secondary" TextAlignment="Center" TextWrapping="Wrap" />
       </StackPanel>
     </Border>
+    <ScrollViewer Grid.Row="2" IsVisible="{Binding HasEntries}">
+      <ItemsControl ItemsSource="{Binding Entries}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:HistoryItemViewModel">
+            <Border Classes="card" Padding="18" Margin="0,0,0,10">
+              <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Grid ColumnDefinitions="*,Auto">
+                  <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock Text="{Binding LanguagePair}" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Model}" Classes="secondary" />
+                    <TextBlock Text="{Binding Elapsed}" Classes="secondary" />
+                  </StackPanel>
+                  <TextBlock Grid.Column="1" Text="{Binding CreatedAt}" Classes="secondary" />
+                </Grid>
+                <Grid Grid.Row="1" ColumnDefinitions="*,16,*">
+                  <StackPanel><TextBlock Text="原文" Classes="eyebrow" /><TextBlock Text="{Binding SourceText}" TextWrapping="Wrap" MaxHeight="72" TextTrimming="CharacterEllipsis" Margin="0,6,0,0" /></StackPanel>
+                  <StackPanel Grid.Column="2"><TextBlock Text="译文" Classes="eyebrow" /><TextBlock Text="{Binding TranslatedText}" TextWrapping="Wrap" MaxHeight="72" TextTrimming="CharacterEllipsis" Margin="0,6,0,0" /></StackPanel>
+                </Grid>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                  <Button Content="复制译文" Command="{Binding CopyCommand}" Classes="quiet" />
+                  <Button Content="删除" Command="{Binding DeleteCommand}" Classes="quiet" />
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
   </Grid>
 </UserControl>

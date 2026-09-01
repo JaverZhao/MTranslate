@@ -8,7 +8,8 @@ public sealed record TranslationCacheKey(
     string? SourceLanguage,
     string TargetLanguage,
     string ModelProfile,
-    string GlossaryVersion = "none")
+    string GlossaryVersion = "none",
+    string? Context = null)
 {
     public string ComputeHash()
     {
@@ -17,7 +18,7 @@ public sealed record TranslationCacheKey(
             .Trim()
             .Normalize(NormalizationForm.FormC);
         var canonical = string.Join('\u001f', normalized, SourceLanguage?.Trim().ToLowerInvariant() ?? "auto",
-            TargetLanguage.Trim().ToLowerInvariant(), ModelProfile.Trim(), GlossaryVersion.Trim());
+            TargetLanguage.Trim().ToLowerInvariant(), ModelProfile.Trim(), GlossaryVersion.Trim(), Context?.Trim() ?? string.Empty);
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical)));
     }
 }

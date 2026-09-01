@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentIcons.Common;
 
 namespace MTranslate.Desktop.ViewModels;
 
@@ -18,12 +19,12 @@ public sealed class MainWindowViewModel : ObservableObject
     {
         Navigation =
         [
-            new("翻译", "TR", home, Select),
-            new("文件", "FL", files, Select),
-            new("历史", "HS", history, Select),
-            new("模型", "MD", models, Select),
-            new("本地 API", "AP", api, Select),
-            new("设置", "ST", settings, Select)
+            new("翻译", Icon.Translate, home, Select),
+            new("文件", Icon.Document, files, Select),
+            new("历史", Icon.History, history, Select),
+            new("模型", Icon.BrainCircuit, models, Select),
+            new("本地 API", Icon.PlugConnected, api, Select),
+            new("设置", Icon.Settings, settings, Select)
         ];
         selectedNavigation = Navigation[0];
         selectedNavigation.IsSelected = true;
@@ -41,6 +42,7 @@ public sealed class MainWindowViewModel : ObservableObject
         SelectedNavigation = item;
         SelectedNavigation.IsSelected = true;
         CurrentPage = item.Page;
+        CurrentPage.OnNavigatedTo();
     }
 }
 
@@ -50,18 +52,18 @@ public sealed class NavigationItemViewModel : ObservableObject
 
     public NavigationItemViewModel(
         string title,
-        string monogram,
+        Icon icon,
         PageViewModel page,
         Action<NavigationItemViewModel> select)
     {
         Title = title;
-        Monogram = monogram;
+        Icon = icon;
         Page = page;
         SelectCommand = new RelayCommand(() => select(this));
     }
 
     public string Title { get; }
-    public string Monogram { get; }
+    public Icon Icon { get; }
     public PageViewModel Page { get; }
     public IRelayCommand SelectCommand { get; }
     public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }

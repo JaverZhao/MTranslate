@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "models": [
     {
-      "id": "hy-mt2-1.8b-fast",
+      "id": "hy-mt2-1.8b-2bit",
       "displayName": "Hy-MT2 1.8B Fast",
       "quantization": "Q2_0c",
       "repository": "tencent/Hy-MT2-1.8B-2Bit-GGUF",
@@ -11,11 +11,11 @@
       "url": "https://huggingface.co/tencent/Hy-MT2-1.8B-2Bit-GGUF/resolve/main/Hy-MT2-1.8B-2Bit.gguf",
       "sha256": "dcc33bbae9b28d923c8c76a64f6157840841d26f8774f3dfd770d5fabeeb1cd7",
       "sizeBytes": 600534880,
-      "runtimeCompatibility": "blocked-upstream",
-      "compatibilityNote": "Q2_0c requires llama.cpp PR 19357, which is not merged into the main branch. The published GGUF also has unresolved tensor offset mismatch reports on standard llama.cpp."
+      "runtimeCompatibility": "experimental-ready-win-x64",
+      "compatibilityNote": "Validated on Windows x64 CPU with the pinned llama.cpp PR 19357 head commit 2af64dd00a6689a7bfaf69b4768a944d0ec6bade. Standard llama.cpp releases remain unsupported; other target platforms still require regression validation."
     },
     {
-      "id": "hy-mt2-1.8b-standard",
+      "id": "hy-mt2-1.8b-q4",
       "displayName": "Hy-MT2 1.8B Standard",
       "quantization": "Q4_K_M",
       "repository": "tencent/Hy-MT2-1.8B-GGUF",

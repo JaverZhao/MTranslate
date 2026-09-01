@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using MTranslate.Core;
 using MTranslate.Desktop.Services;
@@ -17,6 +18,7 @@ public sealed class HomeViewModel : PageViewModel
     private bool isBusy;
     private LanguageOption selectedSourceLanguage;
     private LanguageOption selectedTargetLanguage;
+    private ModelOption selectedModel;
 
     public HomeViewModel(ITranslationCoordinator coordinator, IClipboardService clipboard)
         : base("翻译工作台", "输入文本，所有内容只在本机处理。")
@@ -25,10 +27,11 @@ public sealed class HomeViewModel : PageViewModel
         this.clipboard = clipboard;
         SourceLanguages = [new("auto", "自动识别"), .. TranslationLanguages.All.Select(ToLanguageOption)];
         TargetLanguages = SourceLanguages.Where(language => language.Code != "auto").ToArray();
-        Models = [new("standard", "标准 · Q4")];
+        Models = [];
         selectedSourceLanguage = SourceLanguages[0];
         selectedTargetLanguage = TargetLanguages.Single(language => language.Code == "zh-CN");
-        SelectedModel = Models[0];
+        selectedModel = new ModelOption(DesktopTranslationCoordinator.StandardModelId, "标准 · Q4_K_M");
+        RefreshModels();
         statusMessage = coordinator.ModelStatus;
         TranslateCommand = new AsyncRelayCommand(TranslateAsync, CanTranslate);
         CancelCommand = new RelayCommand(Cancel, () => IsBusy);
@@ -42,8 +45,16 @@ public sealed class HomeViewModel : PageViewModel
 
     public IReadOnlyList<LanguageOption> SourceLanguages { get; }
     public IReadOnlyList<LanguageOption> TargetLanguages { get; }
-    public IReadOnlyList<ModelOption> Models { get; }
-    public ModelOption SelectedModel { get; }
+    public ObservableCollection<ModelOption> Models { get; }
+    public ModelOption SelectedModel
+    {
+        get => selectedModel;
+        set
+        {
+            if (!SetProperty(ref selectedModel, value)) return;
+            StatusMessage = $"已选择{value.DisplayName}，将在下次翻译时切换";
+        }
+    }
     public IAsyncRelayCommand TranslateCommand { get; }
     public IRelayCommand CancelCommand { get; }
     public IAsyncRelayCommand CopyCommand { get; }
@@ -99,6 +110,8 @@ public sealed class HomeViewModel : PageViewModel
     public int SourceCharacterCount => SourceText.Length;
     public int TranslatedCharacterCount => TranslatedText.Length;
 
+    public override void OnNavigatedTo() => RefreshModels();
+
     private bool CanTranslate() => !IsBusy && !string.IsNullOrWhiteSpace(SourceText);
 
     private async Task TranslateAsync()
@@ -111,6 +124,7 @@ public sealed class HomeViewModel : PageViewModel
         var stopwatch = Stopwatch.StartNew();
         try
         {
+            await coordinator.SelectModelAsync(SelectedModel.Id, translationCancellation.Token);
             var result = await coordinator.TranslateAsync(
                 SourceText,
                 SelectedSourceLanguage.Code,
@@ -166,5 +180,27 @@ public sealed class HomeViewModel : PageViewModel
         CopyCommand.NotifyCanExecuteChanged();
         ClearCommand.NotifyCanExecuteChanged();
         SwapCommand.NotifyCanExecuteChanged();
+    }
+
+    private void RefreshModels()
+    {
+        var previousId = selectedModel?.Id;
+        var available = coordinator.ModelInfos
+            .Where(model => model.IsInstalled && model.RuntimeAvailable)
+            .Select(model => new ModelOption(
+                model.Id,
+                model.Id == DesktopTranslationCoordinator.FastModelId ? "极速 · Q2_0C" : "标准 · Q4_K_M"))
+            .ToArray();
+        if (available.Length == 0)
+            available = [new ModelOption(DesktopTranslationCoordinator.StandardModelId, "标准 · Q4_K_M")];
+
+        Models.Clear();
+        foreach (var model in available)
+            Models.Add(model);
+        var activeId = coordinator.ModelInfos.FirstOrDefault(model => model.IsActive)?.Id;
+        selectedModel = Models.FirstOrDefault(model => model.Id == activeId)
+            ?? Models.FirstOrDefault(model => model.Id == previousId)
+            ?? Models[0];
+        OnPropertyChanged(nameof(SelectedModel));
     }
 }

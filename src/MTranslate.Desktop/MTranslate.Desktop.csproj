@@ -9,9 +9,11 @@
     <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="FluentIcons.Avalonia" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="../MTranslate.Api/MTranslate.Api.csproj" />
     <ProjectReference Include="../MTranslate.Core/MTranslate.Core.csproj" />
     <ProjectReference Include="../MTranslate.DocumentFormats/MTranslate.DocumentFormats.csproj" />
     <ProjectReference Include="../MTranslate.Infrastructure/MTranslate.Infrastructure.csproj" />

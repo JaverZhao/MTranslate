@@ -1,16 +1,47 @@
 <UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.ApiView" x:DataType="vm:ApiViewModel">
-  <StackPanel Margin="38,32" Spacing="22">
-    <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
-    <Border Classes="card" Padding="24">
+  <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="38,32" RowSpacing="18">
+    <Grid ColumnDefinitions="*,Auto">
+      <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
+      <Button Grid.Column="1" Content="刷新" Command="{Binding RefreshCommand}" />
+    </Grid>
+
+    <Border Grid.Row="1" Classes="card" Padding="24">
       <Grid ColumnDefinitions="*,Auto">
-        <StackPanel Spacing="8"><TextBlock Text="服务状态" Classes="eyebrow" /><TextBlock Text="{Binding Status}" FontSize="22" FontWeight="SemiBold" /><TextBlock Text="{Binding Availability}" Classes="secondary" /></StackPanel>
-        <Border Grid.Column="1" Background="#FDEBEC" CornerRadius="12" Padding="11,6" VerticalAlignment="Top"><TextBlock Text="OFFLINE" Foreground="#9F2F2D" FontSize="10" FontWeight="Bold" LetterSpacing="1" /></Border>
+        <StackPanel Spacing="8"><TextBlock Text="服务状态" Classes="eyebrow" /><TextBlock Text="{Binding Status}" FontSize="22" FontWeight="SemiBold" /><TextBlock Text="{Binding Availability}" Classes="secondary" TextWrapping="Wrap" /></StackPanel>
+        <Border Grid.Column="1" Background="#EDF3EC" CornerRadius="12" Padding="11,6" VerticalAlignment="Top"><TextBlock Text="{Binding StatusBadge}" Foreground="#346538" FontSize="10" FontWeight="Bold" LetterSpacing="1" /></Border>
       </Grid>
     </Border>
-    <Grid ColumnDefinitions="*,16,*">
-      <Border Classes="card" Padding="22"><StackPanel Spacing="8"><TextBlock Text="监听地址" Classes="eyebrow" /><TextBlock Text="{Binding Endpoint}" FontFamily="Cascadia Mono, SF Mono" FontSize="17" /><TextBlock Text="默认仅允许本机访问" Classes="secondary" /></StackPanel></Border>
-      <Border Grid.Column="2" Classes="card" Padding="22"><StackPanel Spacing="8"><TextBlock Text="已配对客户端" Classes="eyebrow" /><TextBlock Text="0" FontSize="25" FontWeight="SemiBold" /><TextBlock Text="Token 不会以明文写入数据库" Classes="secondary" /></StackPanel></Border>
+
+    <Grid Grid.Row="2" ColumnDefinitions="*,16,*">
+      <Border Classes="card" Padding="22"><StackPanel Spacing="8"><TextBlock Text="监听地址" Classes="eyebrow" /><TextBlock Text="{Binding Endpoint}" FontFamily="Cascadia Mono, SF Mono" FontSize="16" /><TextBlock Text="默认仅允许本机访问" Classes="secondary" /></StackPanel></Border>
+      <Border Grid.Column="2" Classes="card" Padding="22">
+        <Grid ColumnDefinitions="*,Auto">
+          <StackPanel Spacing="6"><TextBlock Text="一次性配对码" Classes="eyebrow" /><TextBlock Text="{Binding PairingCode}" FontFamily="Cascadia Mono, SF Mono" FontSize="25" FontWeight="SemiBold" /><TextBlock Text="{Binding PairingExpiry}" Classes="secondary" /></StackPanel>
+          <Button Grid.Column="1" Content="生成配对码" Command="{Binding GeneratePairingCodeCommand}" VerticalAlignment="Center" Classes="primary" />
+        </Grid>
+      </Border>
     </Grid>
-  </StackPanel>
+
+    <Border Grid.Row="3" Classes="card" Padding="22">
+      <Grid RowDefinitions="Auto,*" RowSpacing="12">
+        <Grid ColumnDefinitions="*,Auto"><TextBlock Text="已配对客户端" Classes="eyebrow" /><TextBlock Grid.Column="1" Text="{Binding ClientCount, StringFormat={}{0} 个有效客户端}" Classes="secondary" /></Grid>
+        <ScrollViewer Grid.Row="1">
+          <ItemsControl ItemsSource="{Binding Clients}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:ApiClientItemViewModel">
+                <Grid ColumnDefinitions="*,150,150,80,Auto" Margin="0,8" ColumnSpacing="12">
+                  <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="1" Text="{Binding ClientType}" Classes="secondary" />
+                  <TextBlock Grid.Column="2" Text="{Binding LastUsed}" Classes="secondary" />
+                  <TextBlock Grid.Column="3" Text="{Binding State}" Classes="secondary" />
+                  <Button Grid.Column="4" Content="吊销" Command="{Binding RevokeCommand}" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+  </Grid>
 </UserControl>

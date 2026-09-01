@@ -13,14 +13,23 @@
             <TextBlock Text="翻译质量和稳定性更好，适合日常文本和长文档。" Classes="secondary" TextWrapping="Wrap" />
             <Border Height="1" Background="#EAE9E5" />
             <Grid ColumnDefinitions="*,Auto"><StackPanel><TextBlock Text="Hy-MT2 1.8B" Classes="eyebrow" /><TextBlock Text="Q4_K_M · 约 1.13 GB" Classes="secondary" Margin="0,4,0,0" /></StackPanel><TextBlock Grid.Column="1" Text="{Binding StandardStatus}" Foreground="#346538" VerticalAlignment="Center" /></Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Content="下载模型" Command="{Binding DownloadStandardCommand}" IsVisible="{Binding StandardCanDownload}" />
+              <Button Content="设为当前" Command="{Binding SelectStandardCommand}" IsVisible="{Binding !StandardCanDownload}" />
+            </StackPanel>
           </StackPanel>
         </Border>
         <Border Grid.Column="2" Classes="card" Padding="24">
           <StackPanel Spacing="14">
-            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="极速" FontSize="21" FontWeight="SemiBold" /><Border Grid.Column="1" Background="#FBF3DB" CornerRadius="12" Padding="10,5"><TextBlock Text="暂不可用" Foreground="#956400" FontSize="11" FontWeight="SemiBold" /></Border></Grid>
+            <Grid ColumnDefinitions="*,Auto"><TextBlock Text="极速" FontSize="21" FontWeight="SemiBold" /><Border Grid.Column="1" Background="#FBF3DB" CornerRadius="12" Padding="10,5"><TextBlock Text="实验性" Foreground="#956400" FontSize="11" FontWeight="SemiBold" /></Border></Grid>
             <TextBlock Text="占用更低，面向短文本和低配置电脑。" Classes="secondary" TextWrapping="Wrap" />
             <Border Height="1" Background="#EAE9E5" />
-            <StackPanel><TextBlock Text="Hy-MT2 1.8B" Classes="eyebrow" /><TextBlock Text="2-Bit · 约 0.60 GB" Classes="secondary" Margin="0,4,0,0" /><TextBlock Text="{Binding FastStatus}" Foreground="#956400" Margin="0,10,0,0" TextWrapping="Wrap" /></StackPanel>
+            <StackPanel><TextBlock Text="Hy-MT2 1.8B" Classes="eyebrow" /><TextBlock Text="Q2_0C · 约 0.60 GB" Classes="secondary" Margin="0,4,0,0" /><TextBlock Text="{Binding FastStatus}" Foreground="#956400" Margin="0,10,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding FastProgress}" Classes="secondary" Margin="0,4,0,0" /></StackPanel>
+            <TextBlock Text="使用固定提交构建的 Q2_0C 兼容运行时；标准模型可随时回退。" Classes="secondary" TextWrapping="Wrap" FontSize="12" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Content="下载模型" Command="{Binding DownloadFastCommand}" IsVisible="{Binding FastCanDownload}" />
+              <Button Content="设为当前" Command="{Binding SelectFastCommand}" IsVisible="{Binding !FastCanDownload}" />
+            </StackPanel>
           </StackPanel>
         </Border>
       </Grid>

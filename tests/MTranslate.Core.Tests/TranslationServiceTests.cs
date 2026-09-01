@@ -27,6 +27,24 @@ public sealed class TranslationServiceTests
         Assert.Contains(client.Requests.Skip(1), item => item.Context is not null);
     }
 
+    [Fact]
+    public async Task TranslateAsync_ContextParticipatesInCacheIdentityAndCacheCanBeBypassed()
+    {
+        var client = new RecordingClient();
+        var cache = new MemoryCache();
+        await using var queue = new TranslationJobQueue();
+        var service = new TranslationService(client, new ChunkManager(), cache, queue);
+
+        await service.TranslateAsync(new TranslationServiceRequest("bank", "zh-CN", "en", Context: "river bank"));
+        await service.TranslateAsync(new TranslationServiceRequest("bank", "zh-CN", "en", Context: "financial bank"));
+        await service.TranslateAsync(new TranslationServiceRequest("bank", "zh-CN", "en", Context: "river bank"));
+        await service.TranslateAsync(new TranslationServiceRequest("bank", "zh-CN", "en", Context: "river bank", UseCache: false));
+
+        Assert.Equal(3, client.Requests.Count);
+        Assert.Equal("river bank", client.Requests[0].Context);
+        Assert.Equal("financial bank", client.Requests[1].Context);
+    }
+
     private sealed class CharacterEstimator : ITokenEstimator
     {
         public int Estimate(string text) => text.Length;

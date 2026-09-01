@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:MTranslate.Desktop.ViewModels"
+             xmlns:icons="using:FluentIcons.Avalonia"
              x:Class="MTranslate.Desktop.Views.HomeView"
              x:DataType="vm:HomeViewModel">
   <UserControl.KeyBindings>
@@ -17,20 +18,23 @@
       </Border>
     </Grid>
 
-    <Grid Grid.Row="1" ColumnDefinitions="*,20,*,20,180">
-      <StackPanel>
+    <Grid Grid.Row="1" ColumnDefinitions="220,52,220,*,180">
+      <StackPanel HorizontalAlignment="Stretch">
         <TextBlock Text="源语言" Classes="eyebrow" Margin="0,0,0,7" />
-        <ComboBox ItemsSource="{Binding SourceLanguages}" SelectedItem="{Binding SelectedSourceLanguage}" />
+        <ComboBox ItemsSource="{Binding SourceLanguages}" SelectedItem="{Binding SelectedSourceLanguage}" HorizontalAlignment="Stretch" />
       </StackPanel>
-      <Button Grid.Column="1" Command="{Binding SwapCommand}" Classes="quiet" Content="⇄" Padding="5"
-              Width="34" Height="34" VerticalAlignment="Bottom" Margin="-7,0" />
-      <StackPanel Grid.Column="2">
+      <Button Grid.Column="1" Command="{Binding SwapCommand}" Classes="quiet" Padding="0"
+              Width="36" Height="36" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+              ToolTip.Tip="交换源语言与目标语言">
+        <icons:FluentIcon Icon="ArrowSwap" IconSize="Size20" Width="18" Height="18" />
+      </Button>
+      <StackPanel Grid.Column="2" HorizontalAlignment="Stretch">
         <TextBlock Text="目标语言" Classes="eyebrow" Margin="0,0,0,7" />
-        <ComboBox ItemsSource="{Binding TargetLanguages}" SelectedItem="{Binding SelectedTargetLanguage}" />
+        <ComboBox ItemsSource="{Binding TargetLanguages}" SelectedItem="{Binding SelectedTargetLanguage}" HorizontalAlignment="Stretch" />
       </StackPanel>
       <StackPanel Grid.Column="4">
         <TextBlock Text="模型" Classes="eyebrow" Margin="0,0,0,7" />
-        <ComboBox ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}" IsEnabled="False" />
+        <ComboBox ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}" HorizontalAlignment="Stretch" />
       </StackPanel>
     </Grid>
 
@@ -59,11 +63,13 @@
       </Border>
     </Grid>
 
-    <Grid Grid.Row="3" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="10">
-      <Button Content="翻译" Command="{Binding TranslateCommand}" Classes="primary" MinWidth="96" IsVisible="{Binding !IsBusy}" />
-      <Button Grid.Column="1" Content="取消" Command="{Binding CancelCommand}" Classes="quiet" MinWidth="80" IsVisible="{Binding IsBusy}" />
-      <Button Grid.Column="3" Content="清空" Command="{Binding ClearCommand}" Classes="quiet" />
-      <Button Grid.Column="4" Content="复制译文" Command="{Binding CopyCommand}" Classes="quiet" />
+    <Grid Grid.Row="3" ColumnDefinitions="96,*,Auto,Auto" ColumnSpacing="10">
+      <Grid Width="96">
+        <Button Content="翻译" Command="{Binding TranslateCommand}" Classes="primary" HorizontalAlignment="Stretch" IsVisible="{Binding !IsBusy}" />
+        <Button Content="取消" Command="{Binding CancelCommand}" Classes="quiet" HorizontalAlignment="Stretch" IsVisible="{Binding IsBusy}" />
+      </Grid>
+      <Button Grid.Column="2" Content="清空" Command="{Binding ClearCommand}" Classes="quiet" />
+      <Button Grid.Column="3" Content="复制译文" Command="{Binding CopyCommand}" Classes="quiet" />
     </Grid>
   </Grid>
 </UserControl>

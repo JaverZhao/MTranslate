@@ -17,8 +17,8 @@ internal static class Program
           translate-file --server <url> --input <path> --output <path> --target <language> [--source <language>] [--output-mode <translation|original-translation|translation-original>] [--api-key <key>]
           benchmark --server <url> --target <language> [--source <language>] [--text <text>] [--iterations <count>] [--api-key <key>]
           download-model --url <url> --sha256 <hash> --output <path>
-          run-server --exe <path> --model <path> [--port <port>] [--context-size <tokens>] [--parallel <slots>] [--api-key <key>]
-          verify --exe <path> --model <path> --mode <name> [--report <path>] [--port <port>]
+          run-server --exe <path> --model <path> [--port <port>] [--context-size <tokens>] [--parallel <slots>] [--gpu-layers <count>] [--api-key <key>]
+          verify --exe <path> --model <path> --mode <name> [--report <path>] [--port <port>] [--gpu-layers <count>]
 
         If --text is omitted, translate and benchmark read UTF-8 text from standard input.
         """;
@@ -185,6 +185,7 @@ internal static class Program
             Port: options.PositiveInt("port", 17892),
             ContextSize: options.PositiveInt("context-size", 8192),
             ParallelSlots: options.PositiveInt("parallel", 2),
+            GpuLayers: options.NonNegativeInt("gpu-layers", 0),
             ApiKey: options.Optional("api-key"));
         await using var runtime = new LlamaServerRuntime(configuration);
         await runtime.StartAsync(line => Console.Error.WriteLine($"[llama-server] {line}"), cancellationToken).ConfigureAwait(false);
@@ -208,7 +209,8 @@ internal static class Program
             options.Required("model"),
             Port: options.PositiveInt("port", 17892),
             ContextSize: 8192,
-            ParallelSlots: 2);
+            ParallelSlots: 2,
+            GpuLayers: options.NonNegativeInt("gpu-layers", 0));
         var reportPath = options.Optional("report") ?? Path.Combine("artifacts", "phase1", "regression-report.json");
         var runner = new Phase1RegressionRunner(configuration, options.Required("mode"), reportPath);
         var report = await runner.RunAsync(
@@ -315,6 +317,16 @@ internal static class Program
                 return defaultValue;
             if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result) || result <= 0)
                 throw new CommandLineException($"Option '--{name}' must be a positive integer.");
+            return result;
+        }
+
+        public int NonNegativeInt(string name, int defaultValue)
+        {
+            var value = Optional(name);
+            if (value is null)
+                return defaultValue;
+            if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var result) || result < 0)
+                throw new CommandLineException($"Option '--{name}' must be a non-negative integer.");
             return result;
         }
     }

@@ -1,16 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:MTranslate.Desktop.ViewModels" x:Class="MTranslate.Desktop.Views.SettingsView" x:DataType="vm:SettingsViewModel">
-  <ScrollViewer>
-    <StackPanel Margin="38,32,38,44" Spacing="22" MaxWidth="820" HorizontalAlignment="Left">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="38,32,38,44" Spacing="22" MaxWidth="820" HorizontalAlignment="Stretch">
       <StackPanel><TextBlock Text="{Binding Title}" Classes="pageTitle" /><TextBlock Text="{Binding Subtitle}" Classes="secondary" Margin="0,7,0,0" /></StackPanel>
 
       <StackPanel Spacing="10">
         <TextBlock Text="常规" Classes="eyebrow" />
         <Border Classes="card">
           <StackPanel>
-            <Grid ColumnDefinitions="*,230" Margin="22,18"><StackPanel><TextBlock Text="界面语言" FontWeight="SemiBold" /><TextBlock Text="重新启动后完整应用语言设置" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel><ComboBox Grid.Column="1" ItemsSource="{Binding InterfaceLanguages}" SelectedItem="{Binding InterfaceLanguage}" /></Grid>
+            <Grid ColumnDefinitions="*,24,180" Margin="22,18"><StackPanel><TextBlock Text="界面语言" FontWeight="SemiBold" /><TextBlock Text="重新启动后完整应用语言设置" Classes="secondary" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap" /></StackPanel><ComboBox Grid.Column="2" ItemsSource="{Binding InterfaceLanguages}" SelectedItem="{Binding InterfaceLanguage}" HorizontalAlignment="Stretch" VerticalAlignment="Center" /></Grid>
             <Border Height="1" Background="#EAE9E5" Margin="22,0" />
-            <Grid ColumnDefinitions="*,230" Margin="22,18"><StackPanel><TextBlock Text="推理加速" FontWeight="SemiBold" /><TextBlock Text="自动模式会根据平台选择安全后端" Classes="secondary" FontSize="12" Margin="0,3,0,0" /></StackPanel><ComboBox Grid.Column="1" ItemsSource="{Binding AccelerationOptions}" SelectedItem="{Binding Acceleration}" /></Grid>
+            <Grid ColumnDefinitions="*,24,180" Margin="22,18"><StackPanel><TextBlock Text="推理加速" FontWeight="SemiBold" /><TextBlock Text="自动模式优先使用可用 GPU；极速 Q2_0C 当前仅支持 CPU" Classes="secondary" FontSize="12" Margin="0,3,0,0" TextWrapping="Wrap" /><TextBlock Text="{Binding AccelerationStatus}" Foreground="#346538" FontSize="12" Margin="0,5,0,0" /></StackPanel><ComboBox Grid.Column="2" ItemsSource="{Binding AccelerationOptions}" SelectedItem="{Binding Acceleration}" HorizontalAlignment="Stretch" VerticalAlignment="Center" /></Grid>
           </StackPanel>
         </Border>
       </StackPanel>

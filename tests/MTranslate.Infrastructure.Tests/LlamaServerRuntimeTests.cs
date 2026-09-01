@@ -25,4 +25,24 @@ public sealed class LlamaServerRuntimeTests
 
         Assert.Equal("integration-test-key", runtime.ApiKey);
     }
+
+    [Fact]
+    public void Configuration_RejectsNegativeGpuLayerCount()
+    {
+        var executablePath = Path.GetTempFileName();
+        var modelPath = Path.GetTempFileName();
+        try
+        {
+            var configuration = new InferenceRuntimeConfiguration(executablePath, modelPath, GpuLayers: -1);
+
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(configuration.Validate);
+
+            Assert.Equal("GpuLayers", exception.ParamName);
+        }
+        finally
+        {
+            File.Delete(executablePath);
+            File.Delete(modelPath);
+        }
+    }
 }

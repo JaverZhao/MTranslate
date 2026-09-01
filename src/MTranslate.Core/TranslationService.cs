@@ -9,7 +9,9 @@ public sealed record TranslationServiceRequest(
     TranslationProfile? Profile = null,
     TranslationJobSource Source = TranslationJobSource.DesktopText,
     TranslationJobPriority Priority = TranslationJobPriority.Normal,
-    ChunkingOptions? Chunking = null);
+    ChunkingOptions? Chunking = null,
+    string? Context = null,
+    bool UseCache = true);
 
 public sealed record TranslationServiceResult(
     string Text,
@@ -55,9 +57,12 @@ public sealed class TranslationService(
         foreach (var chunk in chunks)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var context = previousSource ?? request.Context;
             var key = new TranslationCacheKey(chunk.Text, request.SourceLanguage, request.TargetLanguage,
-                request.ModelProfile, request.GlossaryVersion);
-            var text = await cache.TryGetAsync(key, cancellationToken).ConfigureAwait(false);
+                request.ModelProfile, request.GlossaryVersion, context);
+            var text = request.UseCache
+                ? await cache.TryGetAsync(key, cancellationToken).ConfigureAwait(false)
+                : null;
             if (text is not null)
             {
                 cacheHits++;
@@ -68,13 +73,14 @@ public sealed class TranslationService(
                     chunk.Text,
                     request.TargetLanguage,
                     request.SourceLanguage,
-                    previousSource,
+                    context,
                     request.Profile), cancellationToken).ConfigureAwait(false);
                 text = result.Text.Trim();
                 duration += result.TotalDuration;
                 if (result.PromptTokens is { } currentPrompt) promptTokens += currentPrompt; else hasPromptTokens = false;
                 if (result.CompletionTokens is { } currentCompletion) completionTokens += currentCompletion; else hasCompletionTokens = false;
-                await cache.SetAsync(key, text, cancellationToken).ConfigureAwait(false);
+                if (request.UseCache)
+                    await cache.SetAsync(key, text, cancellationToken).ConfigureAwait(false);
             }
 
             translated.Append(text);
